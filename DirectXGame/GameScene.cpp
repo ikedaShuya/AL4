@@ -15,7 +15,7 @@ void GameScene::Initialize() {
 
 	// 自キャラの生成
 	player_ = new Player();
-	Vector3 playerPosition = {(WinApp::kWindowWidth / 2), (WinApp::kWindowHeight / 2), 0.0f};
+	Vector3 playerPosition = {0, 0, 0.0f};
 	// 自キャラの初期化
 	player_->Initialize(modelPlayer_, &camera_, playerPosition);
 }

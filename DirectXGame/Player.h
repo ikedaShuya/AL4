@@ -1,6 +1,8 @@
 #pragma once
 #include "KamataEngine.h"
+#include "Math.h"
 #include <numbers>
+#include <algorithm>
 
 using namespace KamataEngine;
 
@@ -34,4 +36,10 @@ private:
 	Camera* camera_ = nullptr;
 
 	Vector3 velocity_ = {};
+
+	static inline const float kAcceleration = 0.01f;
+
+	static inline const float kAttenuation = 0.05f;
+
+	static inline const float kLimitRunSpeed = 0.3f;
 };

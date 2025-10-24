@@ -1,45 +1,59 @@
 #pragma once
 #include "KamataEngine.h"
-#include <cmath>
 
 using namespace KamataEngine;
 
-/// <summary>
-/// 数学
-/// </summary>
-class Math {
-public:
-	// --- ベクトル演算（要素ごとの基本計算） ---
-	static Vector3 Add(const Vector3& v1, const Vector3& v2);
-	static Vector3 Subtract(const Vector3& v1, const Vector3& v2);
-	static Vector3 Multiply(float scalar, const Vector3& v);
+// 円周率
+const float PI = 3.141592654f;
 
-	// --- ベクトルの性質・幾何演算 ---
-	static float Length(const Vector3& v);
-	static Vector3 Normalize(const Vector3& v);
-	static float Dot(const Vector3& v1, const Vector3& v2);
-	static Vector3 Cross(const Vector3& v1, const Vector3& v2);
-
-	// --- ベクトルの補間・曲線補間 ---
-	static Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t);
-	static Vector3 Bezier(const Vector3& p0, const Vector3& p1, const Vector3& p2, float t);
-
-	// --- 行列演算（加減算・乗算・逆行列など） ---
-	static Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2);
-	static Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2);
-	static Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
-	static Matrix4x4 Inverse(const Matrix4x4& m);
-
-	// --- 行列生成（スケール・回転・移動・射影など） ---
-	static Matrix4x4 MakeScaleMatrix(const Vector3& scale);
-	static Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
-	static Matrix4x4 MakeRotateXMatrix(float radian);
-	static Matrix4x4 MakeRotateYMatrix(float radian);
-	static Matrix4x4 MakeRotateZMatrix(float radian);
-	static Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
-	static Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);
-	static Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth);
-
-	// --- 座標変換 ---
-	static Vector3 Transform(const Vector3& v, const Matrix4x4& m);
+struct AABB {
+	Vector3 min;
+	Vector3 max;
 };
+
+Vector3 operator+(const Vector3& v);
+Vector3 operator-(const Vector3& v);
+
+const Vector3 operator+(const Vector3& lhv, const Vector3& rhv);
+
+Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t);
+
+const Vector3 operator*(const Vector3& v1, const float f);
+
+// 代入演算子オーバーロード
+Vector3& operator+=(Vector3& lhs, const Vector3& rhv);
+Vector3& operator-=(Vector3& lhs, const Vector3& rhv);
+Vector3& operator*=(Vector3& v, float s);
+Vector3& operator/=(Vector3& v, float s);
+
+// 単位行列の作成
+Matrix4x4 MakeIdentityMatrix();
+// スケーリング行列の作成
+Matrix4x4 MakeScaleMatrix(const Vector3& scale);
+// 回転行列の作成
+Matrix4x4 MakeRotateXMatrix(float theta);
+Matrix4x4 MakeRotateYMatrix(float theta);
+Matrix4x4 MakeRotateZMatrix(float theta);
+// 平行移動行列の作成
+Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
+// アフィン変換行列の作成
+Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rot, const Vector3& translate);
+
+// 代入演算子オーバーロード
+Matrix4x4& operator*=(Matrix4x4& lhm, const Matrix4x4& rhm);
+
+// 2項演算子オーバーロード
+Matrix4x4 operator*(const Matrix4x4& m1, const Matrix4x4& m2);
+
+void WorldMatrix(WorldTransform& worldTransform);
+
+float Lerp(float x1, float x2, float t);
+
+float EaseInOut(float x1, float x2, float t);
+
+bool IsCollision(const AABB& aabb1, const AABB& aabb2);
+
+Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
+
+inline float ToRadians(float degrees) { return degrees * (3.1415f / 180.0f); }
+inline float ToDegrees(float radians) { return radians * (180.0f / 3.1415f); }
