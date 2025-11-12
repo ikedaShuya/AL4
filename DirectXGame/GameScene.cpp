@@ -15,7 +15,7 @@ void GameScene::Initialize() {
 
 	// 自キャラの生成
 	player_ = new Player();
-	Vector3 playerPosition = {0, 0, 0.0f};
+	Vector3 playerPosition = {0.0f, 0.0f, 0.0f};
 	// 自キャラの初期化
 	player_->Initialize(modelPlayer_, &camera_, playerPosition);
 }
@@ -47,6 +47,17 @@ void GameScene::Update() {
 
 	// 自キャラの更新
 	player_->Update();
+
+	// ImGuiでの機能切り替え
+	ImGui::Begin("Player Debug");
+
+	// 自キャラ操作（水平移動）のON/OFF
+	ImGui::Checkbox("Player Control ON/OFF", &player_->enableHorizontalMove_);
+
+	// ジャンプ機能全体のON/OFF
+	ImGui::Checkbox("jump ON/OFF", &player_->enableJump_);
+
+	ImGui::End();
 }
 
 void GameScene::Draw() {
