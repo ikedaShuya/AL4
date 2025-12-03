@@ -4,8 +4,6 @@
 #include <numbers>
 #include <algorithm>
 
-using namespace KamataEngine;
-
 /// <summary>
 /// 自キャラ
 /// </summary>
@@ -14,7 +12,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model, Camera* camera, const Vector3& position);
+	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, const KamataEngine::Vector3& position);
 
 	/// <summary>
 	/// 更新
@@ -34,14 +32,14 @@ public:
 
 private:
 	// ワールド変換データ
-	WorldTransform worldTransform_;
+	KamataEngine::WorldTransform worldTransform_;
 	// モデル
-	Model* model_ = nullptr;
+	KamataEngine::Model* model_ = nullptr;
 
 	// カメラ
-	Camera* camera_ = nullptr;
+	KamataEngine::Camera* camera_ = nullptr;
 
-	Vector3 velocity_ = {};
+	KamataEngine::Vector3 velocity_ = {};
 
 	static inline const float kAcceleration = 0.01f;
 
@@ -65,5 +63,5 @@ private:
 	int jumpCount_ = 0;
 	const int kMaxJumpCount = 2;
 
-	const float kGroundHeight = -15.0f;
+	const float kGroundHeight = 1.0f;
 };

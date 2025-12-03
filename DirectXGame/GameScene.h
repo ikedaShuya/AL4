@@ -1,8 +1,8 @@
 #pragma once
 #include "KamataEngine.h"
+#include "MapChipField.h"
 #include "Player.h"
-
-using namespace KamataEngine;
+#include <vector>
 
 /// <summary>
 /// ゲームシーン
@@ -20,6 +20,8 @@ public:
 
 	~GameScene();
 
+	void GenerateBlocks();
+
 private:
 #ifdef _DEBUG
 
@@ -27,16 +29,24 @@ private:
 	bool isDebugCameraActive_ = false;
 
 	// デバックカメラ
-	DebugCamera* debugCamera_ = nullptr;
+	KamataEngine::DebugCamera* debugCamera_ = nullptr;
 
 #endif
 
 	// 3Dモデルデータ
-	Model* modelPlayer_ = nullptr;
+	KamataEngine::Model* modelPlayer_ = nullptr;
 
 	// カメラ
-	Camera camera_;
+	KamataEngine::Camera camera_;
 
 	// 自キャラ
 	Player* player_ = nullptr;
+
+	// 3Dモデルデータ
+	KamataEngine::Model* modelBlock_ = nullptr;
+
+	std::vector<std::vector<KamataEngine::WorldTransform*>> worldTransformBlocks_;
+
+	// マップチップフィールド
+	MapChipField* mapChipField_;
 };

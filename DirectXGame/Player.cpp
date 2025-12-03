@@ -1,10 +1,14 @@
 #define NOMINMAX
 #include "Player.h"
+#include <cassert>
+
+using namespace KamataEngine;
 
 void Player::Initialize(Model* model, Camera* camera, const Vector3& position) {
 
 	// NULLポインタチェック
 	assert(model);
+	assert(camera);
 
 	// 引数として受け取ったデータをメンバ変数に記録する
 	model_ = model;
@@ -13,7 +17,7 @@ void Player::Initialize(Model* model, Camera* camera, const Vector3& position) {
 	// ワールド変換の初期化
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
-	// worldTransform_.rotation_.y = std::numbers::pi_v<float> / 2.0f;
+	worldTransform_.rotation_.y = std::numbers::pi_v<float> / 2.0f;
 }
 
 void Player::Update() {
