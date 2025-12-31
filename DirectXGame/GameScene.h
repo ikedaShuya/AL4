@@ -1,5 +1,6 @@
 #pragma once
 #include "KamataEngine.h"
+
 /// <summary>
 /// ゲームシーン
 /// </summary>

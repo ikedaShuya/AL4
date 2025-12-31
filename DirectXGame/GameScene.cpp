@@ -6,10 +6,18 @@ void GameScene::Initialize() {}
 
 void GameScene::Update() {
 
-	if (Input::GetInstance()->PushKey(DIK_RETURN)) {
+	if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
 		finished_ = true;
 	}
 
 }
 
-void GameScene::Draw() {}
+void GameScene::Draw() {
+
+	// 3Dモデル描画前処理
+	Model::PreDraw();
+
+	// 3Dモデル描画後処理
+	Model::PostDraw();
+
+}
