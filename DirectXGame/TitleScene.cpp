@@ -6,7 +6,7 @@ void TitleScene::Initialize() {}
 
 void TitleScene::Update() {
 
-	if (Input::GetInstance()->PushKey(DIK_RETURN)) {
+	if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
 		finished_ = true;
 	}
 
