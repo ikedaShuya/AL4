@@ -1,18 +1,27 @@
 #pragma once
 #include "KamataEngine.h"
+
 /// <summary>
-/// ゲームシーン
+/// タイトルシーン
 /// </summary>
-class GameScene {
+class TitleScene {
 public:
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
 
-	// 更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
 
-	// 描画
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
+
+	~TitleScene();
 
 	// デスフラグのgetter
 	bool IsFinished() const { return finished_; }
