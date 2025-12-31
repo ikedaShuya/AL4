@@ -77,4 +77,8 @@ private:
 
 	// 地面にいるかどうか
 	bool onGround_ = true;
+
+	// ジャンプ回数カウント
+	int jumpCount_ = 0;
+	const int kMaxJumpCount = 2;
 };
