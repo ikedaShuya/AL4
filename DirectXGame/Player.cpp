@@ -161,7 +161,8 @@ void Player::ProcessJump() {
 		velocity_.y = kJumpAcceleration * 1.0f;
 	}
 	onGround_ = false;
-	jumpBufferTimer_ = 0; // 消費
+	jumpCount_++;
+	jumpBufferTimer_ = 0;
 }
 
 void Player::CheckMapCollision(CollisionMapInfo& info) {
@@ -457,6 +458,7 @@ void Player::UpdateOnGround(const CollisionMapInfo& info) {
 			velocity_.x *= (1.0f - kAttenuationLanding);
 			// Y速度をゼロにする
 			velocity_.y = 0.0f;
+			jumpCount_ = 0; 
 		}
 	}
 }
