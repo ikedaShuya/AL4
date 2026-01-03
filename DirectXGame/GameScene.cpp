@@ -13,8 +13,9 @@ void GameScene::Initialize() {
 
 	// 自キャラの生成
 	player_ = new Player();
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
 	// 自キャラの初期化
-	player_->Initialize(modelPlayer_, &camera_);
+	player_->Initialize(modelPlayer_, &camera_, playerPosition);
 
 	// ブロックモデルデータの生成
 	modelBlock_ = Model::CreateFromOBJ("cube", true);
@@ -23,6 +24,8 @@ void GameScene::Initialize() {
 	mapChipField_->LoadMapChipCsv("Resources/blocks.csv");
 
 	GenerateBlocks();
+
+	player_->SetMapChipField(mapChipField_);
 
 }
 

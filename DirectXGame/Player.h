@@ -1,6 +1,8 @@
 #pragma once
 #include "KamataEngine.h"
 
+class MapChipField;
+
 /// <summary>
 /// 自キャラ
 /// </summary>
@@ -9,7 +11,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera);
+	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, const KamataEngine::Vector3& position);
 
 	/// <summary>
 	/// 更新
@@ -38,6 +40,42 @@ public:
 		kRight,
 		kLeft,
 	};
+
+	// マップとの当たり判定情報
+	struct CollisionMapInfo {
+		bool ceiling = false;
+		bool landing = false;
+		bool hitWall = false;
+		KamataEngine::Vector3 move;
+	};
+
+	// マップ衝突判定
+	void CheckMapCollision(CollisionMapInfo& info);
+
+	void CheckMapCollisionUp(CollisionMapInfo& info);
+	void CheckMapCollisionDown(CollisionMapInfo& info);
+	void CheckMapCollisionRight(CollisionMapInfo& info);
+	void CheckMapCollisionLeft(CollisionMapInfo& info);
+
+	// 角
+	enum Corner {
+		kRightBottom, // 右下
+		kLeftBottom,  // 左下
+		kRightTop,    // 右上
+		kLeftTop,     // 左上
+
+		kNumCorner // 要素数
+	};
+
+	KamataEngine::Vector3 CornerPosition(const KamataEngine::Vector3& center, Corner corner);
+
+	// 接地状態の切り替え処理
+	void UpdateOnGround(const CollisionMapInfo& info);
+
+	// 壁に接触している場合の処理
+	void UpdateOnWall(const CollisionMapInfo& info);
+
+	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; }
 
 private:
 	// ワールド変換データ
@@ -76,5 +114,26 @@ private:
 	const float kGroundHeight = 1.0f;
 
 	// 地面にいるかどうか
-	bool onGround_ = true;
+	bool onGround_ = false;
+
+	// マップチップによるフィールド
+	MapChipField* mapChipField_ = nullptr;
+
+	// 着地時の速度減衰率
+	static inline const float kAttenuationLanding = 0.03f;
+
+	// 着地時の速度減衰率
+	static inline const float kAttenuationWall = 0.2f;
+
+	static inline const float kBlank = 0.04f;
+
+	// 微小な数値
+	static inline const float kGroundSearchHeight = 0.06f;
+
+	// キャラクターの当たり判定サイズ
+	static inline const float kWidth = 0.8f;
+	static inline const float kHeight = 0.8f;
+
+	int jumpBufferTimer_ = 0;
+	static constexpr int kJumpBufferFrame = 5; // 3～5でOK
 };
