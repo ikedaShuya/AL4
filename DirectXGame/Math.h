@@ -4,7 +4,8 @@
 // 円周率
 const float PI = 3.141592654f;
 
-struct AABB {
+struct AABB
+{
 	KamataEngine::Vector3 min;
 	KamataEngine::Vector3 max;
 };
@@ -55,5 +56,9 @@ bool IsCollision(const AABB& aabb1, const AABB& aabb2);
 
 KamataEngine::Vector3 Transform(const KamataEngine::Vector3& vector, const KamataEngine::Matrix4x4& matrix);
 
-inline float ToRadians(float degrees) { return degrees * (3.1415f / 180.0f); }
-inline float ToDegrees(float radians) { return radians * (180.0f / 3.1415f); }
+inline float ToRadians(float degrees) {
+	return degrees * (3.1415f / 180.0f);
+}
+inline float ToDegrees(float radians) {
+	return radians * (180.0f / 3.1415f);
+}
