@@ -16,7 +16,7 @@ void Player::Initialize(Model* model, Camera* camera) { // NULLポインタチ�
 
 	// ワールド変換の初期化
 	worldTransform_.Initialize();
-	worldTransform_.scale_ = {3.0f, 3.0f, 3.0f};
+	worldTransform_.scale_ = {1.0f, 1.0f, 1.0f};
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> / 2.0f;
 }
 
