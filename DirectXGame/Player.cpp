@@ -164,20 +164,6 @@ void Player::ProcessJump() {
 	jumpBufferTimer_ = 0; // 消費
 }
 
-void Player::ApplyGravity() {
-
-	// 空中のみ重力
-	if (onGround_) {
-		return;
-	}
-
-	// 落下速度
-	velocity_ += Vector3(0, -kGravityAcceleration, 0);
-
-	// 落下速度制限
-	velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
-}
-
 void Player::CheckMapCollision(CollisionMapInfo& info) {
 	CheckMapCollisionUp(info);
 	CheckMapCollisionDown(info);
