@@ -2,6 +2,7 @@
 #include "KamataEngine.h"
 #include "MapChipField.h"
 #include "Player.h"
+#include "CameraController.h"
 
 /// <summary>
 /// ゲームシーン
@@ -46,4 +47,6 @@ private:
 
 	// マップチップフィールド
 	MapChipField* mapChipField_;
+
+	CameraController* CController_ = nullptr;
 };

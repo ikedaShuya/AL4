@@ -27,6 +27,16 @@ void GameScene::Initialize() {
 
 	player_->SetMapChipField(mapChipField_);
 
+	// カメラコントローラの初期化
+	CController_ = new CameraController();
+	CController_->Initialize(&camera_);
+	CController_->SetTarget(player_);
+	CController_->Reset();
+
+	// 移動範囲の指定
+	CameraController::Rect cameraArea = {10.156f, 100 - 12.0f, 6.0f, 6.0f};
+	CController_->SetMovableArea(cameraArea);
+
 }
 
 void GameScene::Update() {
@@ -34,6 +44,8 @@ void GameScene::Update() {
 	if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
 		finished_ = true;
 	}
+
+	CController_->Update();
 
 	// ブロックの更新
 	for (std::vector<WorldTransform*>& worldTransformBlcokLine : worldTransformBlocks_) {
