@@ -1,5 +1,6 @@
 #pragma once
 #include "KamataEngine.h"
+#include "MapChipField.h"
 #include "Player.h"
 
 /// <summary>
@@ -21,10 +22,15 @@ public:
 	// デスフラグのgetter
 	bool IsFinished() const { return finished_; }
 
+	void GenerateBlocks();
+
 private:
 
 	// 終了フラグ
 	bool finished_ = false;
+
+	// カメラ
+	KamataEngine::Camera camera_;
 
 	// 自キャラ
 	Player* player_ = nullptr;
@@ -32,7 +38,12 @@ private:
 	// 3Dモデルデータ
 	KamataEngine::Model* modelPlayer_ = nullptr;
 
-	// カメラ
-	KamataEngine::Camera camera_;
 
+	// ブロックモデルデータ
+	KamataEngine::Model* modelBlock_ = nullptr;
+
+	std::vector<std::vector<KamataEngine::WorldTransform*>> worldTransformBlocks_;
+
+	// マップチップフィールド
+	MapChipField* mapChipField_;
 };
