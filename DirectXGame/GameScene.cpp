@@ -16,6 +16,15 @@ void GameScene::Initialize() {
 
 	GenerateBlocks();
 
+	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
+
+	for (int32_t i = 0; i < 2; ++i) {
+		Enemy* newEnemy = new Enemy();
+		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(14 + i * 2, 18);
+		newEnemy->Initialize(modelEnemy_, &camera_, enemyPosition);
+		enemies_.push_back(newEnemy);
+	}
+
 }
 
 void GameScene::Update() {
@@ -32,6 +41,10 @@ void GameScene::Update() {
 
 			WorldTransformUpdate(*worldTransformBlock);
 		}
+	}
+
+	for (Enemy* enemy_ : enemies_) {
+		enemy_->Update();
 	}
 
 }
@@ -51,6 +64,10 @@ void GameScene::Draw() {
 		}
 	}
 
+	for (Enemy* enemy_ : enemies_) {
+		enemy_->Draw();
+	}
+
 	// 3Dモデル描画後処理
 	Model::PostDraw();
 
@@ -60,6 +77,21 @@ GameScene::~GameScene() {
 
 	// マップチップフィールドの解放
 	delete mapChipField_;
+
+	delete modelBlock_;
+
+	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+			delete worldTransformBlock;
+		}
+	}
+	worldTransformBlocks_.clear();
+
+	delete modelEnemy_;
+
+	for (Enemy* enemy_ : enemies_) {
+		delete enemy_;
+	}
 }
 
 void GameScene::GenerateBlocks() {
