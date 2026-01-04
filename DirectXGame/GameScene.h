@@ -34,6 +34,7 @@ private:
 	// カメラ
 	KamataEngine::Camera camera_;
 
+
 	// ブロックモデルデータ
 	KamataEngine::Model* modelBlock_ = nullptr;
 

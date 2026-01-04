@@ -18,6 +18,7 @@ void GameScene::Initialize() {
 
 	// 3Dモデルデータの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
+	player_->SetMapChipField(mapChipField_);
 
 	// 自キャラの生成
 	player_ = new Player();
