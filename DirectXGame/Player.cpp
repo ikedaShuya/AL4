@@ -120,24 +120,6 @@ void Player::InputHorizontal() {
 	velocity_.x = std::clamp(velocity_.x, -kLimitRunSpeed, kLimitRunSpeed);
 }
 
-void Player::ProcessJump() {
-
-	// 地面にいないならジャンプ不可
-	if (!onGround_) {
-		return;
-	}
-
-	// バッファがなければジャンプしない
-	if (jumpBufferTimer_ <= 0) {
-		return;
-	}
-
-	// ジャンプ
-	velocity_.y = kJumpAcceleration;
-	onGround_ = false;
-	jumpBufferTimer_ = 0; // 消費
-}
-
 void Player::ApplyGravity() {
 
 	// 空中のみ重力
@@ -148,8 +130,38 @@ void Player::ApplyGravity() {
 	// 落下速度
 	velocity_ += Vector3(0, -kGravityAcceleration, 0);
 
+	// 2段ジャンプ中は落下を少し抑える
+	if (velocity_.y < 0.0f && jumpCount_ == 2) {
+		velocity_.y *= 0.98f;
+	}
+
 	// 落下速度制限
 	velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
+}
+
+void Player::ProcessJump() {
+
+	if (!Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+		return;
+	}
+
+	// バッファがなければジャンプしない
+	if (jumpBufferTimer_ <= 0) {
+		return;
+	}
+
+	if (jumpCount_ >= kMaxJumpCount) {
+		return;
+	}
+
+	// ジャンプ
+	if (jumpCount_ == 0) {
+		velocity_.y = kJumpAcceleration;
+	} else {
+		velocity_.y = kJumpAcceleration * 1.0f;
+	}
+	onGround_ = false;
+	jumpBufferTimer_ = 0; // 消費
 }
 
 void Player::CheckMapCollision(CollisionMapInfo& info) {

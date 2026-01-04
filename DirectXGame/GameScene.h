@@ -1,6 +1,7 @@
 #pragma once
 #include "KamataEngine.h"
 #include "Player.h"
+#include "CameraController.h"
 
 #include "MapChipField.h"
 #include "Enemy.h"
@@ -52,4 +53,6 @@ private:
 	std::list<Enemy*> enemies_;
 
 	KamataEngine::Model* modelEnemy_ = nullptr;
+
+	CameraController* CController_ = nullptr;
 };

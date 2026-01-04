@@ -77,6 +77,10 @@ public:
 
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; }
 
+	const KamataEngine::WorldTransform& GetWorldTransform() const { return worldTransform_; }
+
+	const KamataEngine::Vector3& GetVelocity() const { return velocity_; }
+
 private:
 	// ワールド変換データ
 	KamataEngine::WorldTransform worldTransform_;
@@ -135,5 +139,9 @@ private:
 	static inline const float kHeight = 0.8f;
 
 	int jumpBufferTimer_ = 0;
-	static constexpr int kJumpBufferFrame = 5; // 3～5でOK
+	static constexpr int kJumpBufferFrame = 5;
+
+	// ジャンプ回数カウント
+	int jumpCount_ = 0;
+	const int kMaxJumpCount = 2;
 };
