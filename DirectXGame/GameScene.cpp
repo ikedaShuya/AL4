@@ -16,6 +16,14 @@ void GameScene::Initialize() {
 
 	GenerateBlocks();
 
+	// 3Dモデルデータの生成
+	modelPlayer_ = Model::CreateFromOBJ("player", true);
+
+	// 自キャラの生成
+	player_ = new Player();
+	// 自キャラの初期化
+	player_->Initialize(modelPlayer_, &camera_);
+
 	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
 
 	for (int32_t i = 0; i < 2; ++i) {
@@ -47,6 +55,8 @@ void GameScene::Update() {
 		enemy_->Update();
 	}
 
+	player_->Update();
+
 }
 
 void GameScene::Draw() {
@@ -63,6 +73,9 @@ void GameScene::Draw() {
 			modelBlock_->Draw(*worldTransformBlock, camera_);
 		}
 	}
+
+	// 自キャラの描画
+	player_->Draw();
 
 	for (Enemy* enemy_ : enemies_) {
 		enemy_->Draw();
@@ -86,6 +99,12 @@ GameScene::~GameScene() {
 		}
 	}
 	worldTransformBlocks_.clear();
+
+	// モデルデータの解放
+	delete modelPlayer_;
+
+	// 自キャラの解放
+	delete player_;
 
 	delete modelEnemy_;
 

@@ -1,5 +1,7 @@
 #pragma once
 #include "KamataEngine.h"
+#include "Player.h"
+
 #include "MapChipField.h"
 #include "Enemy.h"
 
@@ -39,6 +41,12 @@ private:
 
 	// マップチップフィールド
 	MapChipField* mapChipField_;
+
+	// 自キャラ
+	Player* player_ = nullptr;
+
+	// 3Dモデルデータ
+	KamataEngine::Model* modelPlayer_ = nullptr;
 
 	std::list<Enemy*> enemies_;
 
