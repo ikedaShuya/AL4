@@ -21,8 +21,9 @@ void GameScene::Initialize() {
 
 	// 自キャラの生成
 	player_ = new Player();
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
 	// 自キャラの初期化
-	player_->Initialize(modelPlayer_, &camera_);
+	player_->Initialize(modelPlayer_, &camera_, playerPosition);
 
 	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
 

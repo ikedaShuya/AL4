@@ -6,7 +6,7 @@
 
 using namespace KamataEngine;
 
-void Player::Initialize(Model* model, Camera* camera) { // NULLポインタチェック
+void Player::Initialize(Model* model, Camera* camera, const Vector3& position) { // NULLポインタチェック
 	assert(model);
 	assert(camera);
 
@@ -16,7 +16,7 @@ void Player::Initialize(Model* model, Camera* camera) { // NULLポインタチ�
 
 	// ワールド変換の初期化
 	worldTransform_.Initialize();
-	worldTransform_.scale_ = {3.0f, 3.0f, 3.0f};
+	worldTransform_.translation_ = position;
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> / 2.0f;
 }
 
