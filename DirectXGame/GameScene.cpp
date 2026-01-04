@@ -71,6 +71,9 @@ void GameScene::Update() {
 
 	player_->Update();
 
+	// 全ての当たり判定を行う
+	CheckAllCollisions();
+
 }
 
 void GameScene::Draw() {
@@ -155,3 +158,30 @@ void GameScene::GenerateBlocks() {
 		}
 	}
 }
+
+void GameScene::CheckAllCollisions() {
+
+	// 判定対象1と2の座標（スライド18）
+	AABB aabb1, aabb2;
+
+#pragma region 自キャラと敵キャラの当たり判定
+	{
+		// 自キャラの座標（スライド18）
+		aabb1 = player_->GetAABB();
+
+		// 自キャラと敵弾全ての当たり判定（スライド18）
+		for (Enemy* enemy_ : enemies_) {
+			// 敵弾の座標
+			aabb2 = enemy_->GetAABB();
+
+			// AABB同士の交差判定（スライド18）
+			if (IsCollision(aabb1, aabb2)) {
+				// 自キャラの衝突時関数を呼び出す（スライド19）
+				player_->OnCollision(enemy_);
+				// 敵の衝突時関数を呼び出す（スライド19）
+				enemy_->OnCollision(player_);
+			}
+		}
+	}
+#pragma endregion
+};

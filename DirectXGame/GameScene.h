@@ -27,6 +27,9 @@ public:
 
 	void GenerateBlocks();
 
+	// 全ての当たり判定を行う
+	void CheckAllCollisions();
+
 private:
 
 	// 終了フラグ

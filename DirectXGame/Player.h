@@ -1,7 +1,10 @@
 #pragma once
 #include "KamataEngine.h"
+#include "Math.h"
 
 class MapChipField;
+
+class Enemy;
 
 /// <summary>
 /// 自キャラ
@@ -80,6 +83,15 @@ public:
 	const KamataEngine::WorldTransform& GetWorldTransform() const { return worldTransform_; }
 
 	const KamataEngine::Vector3& GetVelocity() const { return velocity_; }
+
+	// ワールド座標を取得
+	KamataEngine::Vector3 GetWorldPosition();
+
+	// AABBを取得
+	AABB GetAABB();
+
+	// 衝突応答
+	void OnCollision(const Enemy* enemy);
 
 private:
 	// ワールド変換データ
