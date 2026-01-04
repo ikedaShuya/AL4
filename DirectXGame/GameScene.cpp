@@ -18,7 +18,6 @@ void GameScene::Initialize() {
 
 	// 3Dモデルデータの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
-	player_->SetMapChipField(mapChipField_);
 
 	// 自キャラの生成
 	player_ = new Player();
@@ -26,6 +25,7 @@ void GameScene::Initialize() {
 	// 自キャラの初期化
 	player_->Initialize(modelPlayer_, &camera_, playerPosition);
 
+	player_->SetMapChipField(mapChipField_);
 	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
 
 	for (int32_t i = 0; i < 2; ++i) {
