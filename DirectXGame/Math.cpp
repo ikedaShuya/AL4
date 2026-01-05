@@ -2,6 +2,7 @@
 #include <cassert>
 #include <cmath>
 #include <numbers>
+#include <algorithm>
 
 using namespace KamataEngine;
 
@@ -161,6 +162,20 @@ float EaseInOut(float x1, float x2, float t) {
 
 	return Lerp(x1, x2, easedT);
 }
+
+float EaseIn(float x1, float x2, float t) {
+	// t^2（ゆっくり始まる）
+	t = std::clamp(t, 0.0f, 1.0f);
+	return Lerp(x1, x2, t * t);
+}
+
+float EaseOut(float x1, float x2, float t) {
+	// 1 - (1 - t)^2（速く始まってゆっくり止まる）
+	t = std::clamp(t, 0.0f, 1.0f);
+	float easedT = 1.0f - (1.0f - t) * (1.0f - t);
+	return Lerp(x1, x2, easedT);
+}
+
 
 bool IsCollision(const AABB& aabb1, const AABB& aabb2) {
 	return (aabb1.min.x <= aabb2.max.x && aabb1.max.x >= aabb2.min.x) && // x軸

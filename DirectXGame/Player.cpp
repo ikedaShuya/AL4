@@ -6,21 +6,34 @@
 
 using namespace KamataEngine;
 
-void Player::Initialize(Model* model, Camera* camera, const Vector3& position) { // NULLポインタチェック
+void Player::Initialize(Model* model, Model* swordModel, Camera* camera, const Vector3& position) { // NULLポインタチェック
 	assert(model);
+	assert(swordModel);
 	assert(camera);
 
 	// 引数として受け取ったデータをメンバ変数に記録する
 	model_ = model;
+	modelSword_ = swordModel;
 	camera_ = camera;
+
+	swordScale_ = Vector3(2.0f, 2.0f, 2.0f);
 
 	// ワールド変換の初期化
 	worldTransform_.Initialize();
+	swordWorldTransform_.Initialize();
 	worldTransform_.translation_ = position;
+	swordWorldTransform_.translation_ = position;
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> / 2.0f;
+	swordWorldTransform_.scale_ = swordScale_;
 }
 
 void Player::Update() {
+
+	// 近接攻撃処理
+	ProcessAttack();
+
+	float swordOffsetX = 1.3f; // お好みの距離に調整してください
+	swordWorldTransform_.translation_ = worldTransform_.translation_ + Vector3((lrDirection_ == LRDirection::kRight ? 1 : -1) * swordOffsetX, 0.0f, 0.0f);
 
 	// ジャンプ入力をバッファに保存
 	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
@@ -68,12 +81,15 @@ void Player::Update() {
 
 	// 行列を定数バッファに転送
 	WorldTransformUpdate(worldTransform_);
+	WorldTransformUpdate(swordWorldTransform_);
 }
 
 void Player::Draw() {
 
 	// 3Dモデルを描画
 	model_->Draw(worldTransform_, *camera_);
+
+	modelSword_->Draw(swordWorldTransform_, *camera_);
 }
 
 void Player::InputMove() {
@@ -108,8 +124,8 @@ AABB Player::GetAABB() {
 	return aabb;
 }
 
-void Player::OnCollision(const Enemy* enemy) { 
-	(void)enemy; 
+void Player::OnCollision(const Enemy* enemy) {
+	(void)enemy;
 	velocity_ += Vector3(0.0f, 0.1f, 0.0f);
 }
 
@@ -189,7 +205,63 @@ void Player::ProcessJump() {
 		velocity_.y = kJumpAcceleration * 1.0f;
 	}
 	onGround_ = false;
+	jumpCount_++;
 	jumpBufferTimer_ = 0; // 消費
+}
+
+void Player::ProcessAttack() {
+
+	if (!isAttacking_ && Input::GetInstance()->TriggerKey(DIK_J)) {
+		isAttacking_ = true;
+		attackTimer_ = kAttackFrame;
+
+		// 剣振りの初期位置・角度を保存
+		swordStartRotation_ = swordWorldTransform_.rotation_;
+		swordStartTranslation_ = swordWorldTransform_.translation_;
+	}
+
+	if (!isAttacking_)
+		return;
+
+	attackTimer_--;
+
+	float t = 1.0f - static_cast<float>(attackTimer_) / kAttackFrame;
+	float dir = (lrDirection_ == LRDirection::kRight) ? 1.0f : -1.0f;
+
+	if (t < 0.5f) {
+		// 剣を後ろに引く
+		float rate = t / 0.5f;
+		swordWorldTransform_.rotation_.z = EaseOut(0.0f, -1.0f * dir, rate); // 剣をZ軸で回すイメージ
+	} else {
+		// 剣を振り下ろす
+		float rate = (t - 0.5f) / 0.5f;
+		swordWorldTransform_.rotation_.z = EaseIn(-1.0f * dir, 1.0f * dir, rate);
+	}
+
+	if (attackTimer_ <= 0) {
+		isAttacking_ = false;
+		swordWorldTransform_.rotation_.z = 0.0f; // 元に戻す
+	}
+}
+
+AABB Player::GetAttackAABB() {
+
+	Vector3 pos = GetWorldPosition();
+
+	// 向きによって前方に出す
+	float dir = (lrDirection_ == LRDirection::kRight) ? 1.0f : -1.0f;
+
+	Vector3 center;
+	center.x = pos.x + dir * kAttackOffset;
+	center.y = pos.y;
+	center.z = pos.z;
+
+	AABB aabb;
+	aabb.min = {center.x - kAttackWidth / 2.0f, center.y - kAttackHeight / 2.0f, center.z - kAttackWidth / 2.0f};
+
+	aabb.max = {center.x + kAttackWidth / 2.0f, center.y + kAttackHeight / 2.0f, center.z + kAttackWidth / 2.0f};
+
+	return aabb;
 }
 
 void Player::CheckMapCollision(CollisionMapInfo& info) {
@@ -485,6 +557,7 @@ void Player::UpdateOnGround(const CollisionMapInfo& info) {
 			velocity_.x *= (1.0f - kAttenuationLanding);
 			// Y速度をゼロにする
 			velocity_.y = 0.0f;
+			jumpCount_ = 0;
 		}
 	}
 }
@@ -499,4 +572,29 @@ void Player::UpdateOnWall(const CollisionMapInfo& info) {
 	if (info.hitWall && velocity_.y < 0.0f) {
 		velocity_.y *= 0.9f;
 	}
+}
+
+AABB Player::GetSwordAABB() const {
+	Vector3 pos = swordWorldTransform_.translation_;
+	Vector3 scale = swordWorldTransform_.scale_;
+	float angleZ = swordWorldTransform_.rotation_.z;
+	float dir = (lrDirection_ == LRDirection::kRight) ? 1.0f : -1.0f;
+
+	// 剣の長さ（ローカル単位）をスケールで拡大縮小
+	float swordLength = 1.0f * scale.x;
+	float swordWidth = 0.3f * scale.y;
+	float swordHeight = 0.8f * scale.z;
+	float swordDepth = 0.15f * scale.z; // 深さはz方向のスケールで調整
+
+	// 剣の向きベクトル（2D的にX軸方向に向く）
+	Vector3 forward = Vector3(dir * std::cos(angleZ), 0.0f, 0.0f);
+
+	// 剣の中心を少し手前にずらす（剣先すぎると当たらないので）
+	Vector3 center = pos + forward * (swordLength * 0.25f);
+
+	AABB aabb;
+	aabb.min = {center.x - swordWidth / 2.0f, center.y - swordHeight / 2.0f, center.z - swordDepth / 2.0f};
+	aabb.max = {center.x + swordWidth / 2.0f, center.y + swordHeight / 2.0f, center.z + swordDepth / 2.0f};
+
+	return aabb;
 }

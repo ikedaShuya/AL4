@@ -58,4 +58,6 @@ private:
 	KamataEngine::Model* modelEnemy_ = nullptr;
 
 	CameraController* CController_ = nullptr;
+
+	KamataEngine::Model* swordModel_;
 };

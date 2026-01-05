@@ -19,18 +19,35 @@ void GameScene::Initialize() {
 	// 3Dモデルデータの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
 
+	swordModel_ = Model::CreateFromOBJ("sword", true);
+
 	// 自キャラの生成
 	player_ = new Player();
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
 	// 自キャラの初期化
-	player_->Initialize(modelPlayer_, &camera_, playerPosition);
+	player_->Initialize(modelPlayer_, swordModel_, &camera_, playerPosition);
 
 	player_->SetMapChipField(mapChipField_);
 	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
 
-	for (int32_t i = 0; i < 2; ++i) {
+	 // 敵の数
+	const int enemyCount = 5;
+
+	// 敵の配置する行は地面の上（y=17）
+	const int enemyY = 18;
+
+	// 敵のx座標候補リストを作成（0〜99のうち間隔を空けて5箇所）
+	// ここでは単純に均等に配置する例
+	std::vector<int> enemyXs;
+	int spacing = 100 / enemyCount;
+	for (int i = 0; i < enemyCount; ++i) {
+		enemyXs.push_back(spacing / 2 + i * spacing);
+	}
+
+	// 敵を配置
+	for (int i = 0; i < enemyCount; ++i) {
 		Enemy* newEnemy = new Enemy();
-		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(14 + i * 2, 18);
+		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(enemyXs[i], enemyY);
 		newEnemy->Initialize(modelEnemy_, &camera_, enemyPosition);
 		enemies_.push_back(newEnemy);
 	}
@@ -44,7 +61,6 @@ void GameScene::Initialize() {
 	// 移動範囲の指定
 	CameraController::Rect cameraArea = {10.156f, 100 - 12.0f, 6.0f, 6.0f};
 	CController_->SetMovableArea(cameraArea);
-
 }
 
 void GameScene::Update() {
@@ -52,6 +68,15 @@ void GameScene::Update() {
 	if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
 		finished_ = true;
 	}
+
+	// デスフラグの立った敵を削除
+	enemies_.remove_if([](Enemy* enemy) {
+		if (enemy->IsDead()) {
+			delete enemy;
+			return true;
+		}
+		return false;
+	});
 
 	CController_->Update();
 
@@ -66,14 +91,13 @@ void GameScene::Update() {
 	}
 
 	for (Enemy* enemy_ : enemies_) {
-		enemy_->Update();
+		enemy_->Update(player_);
 	}
 
 	player_->Update();
 
 	// 全ての当たり判定を行う
 	CheckAllCollisions();
-
 }
 
 void GameScene::Draw() {
@@ -100,7 +124,6 @@ void GameScene::Draw() {
 
 	// 3Dモデル描画後処理
 	Model::PostDraw();
-
 }
 
 GameScene::~GameScene() {
@@ -159,29 +182,47 @@ void GameScene::GenerateBlocks() {
 	}
 }
 
-void GameScene::CheckAllCollisions() {
-
-	// 判定対象1と2の座標（スライド18）
-	AABB aabb1, aabb2;
+void GameScene::CheckAllCollisions(){
 
 #pragma region 自キャラと敵キャラの当たり判定
-	{
-		// 自キャラの座標（スライド18）
-		aabb1 = player_->GetAABB();
+    {// 判定対象1と2の座標
+     AABB aabb1, aabb2;
 
-		// 自キャラと敵弾全ての当たり判定（スライド18）
-		for (Enemy* enemy_ : enemies_) {
-			// 敵弾の座標
-			aabb2 = enemy_->GetAABB();
+// 自キャラの座標
+aabb1 = player_->GetAABB();
 
-			// AABB同士の交差判定（スライド18）
-			if (IsCollision(aabb1, aabb2)) {
-				// 自キャラの衝突時関数を呼び出す（スライド19）
-				player_->OnCollision(enemy_);
-				// 敵の衝突時関数を呼び出す（スライド19）
-				enemy_->OnCollision(player_);
-			}
+// 自キャラと敵弾全ての当たり判定
+for (Enemy* enemy_ : enemies_) {
+	// 敵弾の座標
+	aabb2 = enemy_->GetAABB();
+
+	// AABB同士の交差判定
+	if (IsCollision(aabb1, aabb2)) {
+		// 自キャラの衝突時関数を呼び出す
+		player_->OnCollision(enemy_);
+		// 敵の衝突時関数を呼び出す
+		enemy_->OnCollision(player_);
+	}
+}
+}
+#pragma endregion
+
+#pragma region 近接攻撃と敵キャラの当たり判定（攻撃）
+{
+	// 攻撃中のみ判定する
+	if (!player_->IsAttacking()) {
+		return;
+	}
+
+	AABB attackAABB = player_->GetSwordAABB();
+
+	for (Enemy* enemy_ : enemies_) {
+		AABB enemyAABB = enemy_->GetAABB();
+
+		if (IsCollision(attackAABB, enemyAABB)) {
+			enemy_->OnHit(player_); // ダメージ処理
 		}
 	}
+}
 #pragma endregion
-};
+}

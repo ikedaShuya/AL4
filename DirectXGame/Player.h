@@ -14,7 +14,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, const KamataEngine::Vector3& position);
+	void Initialize(KamataEngine::Model* model, KamataEngine::Model* swordModel, KamataEngine::Camera* camera, const KamataEngine::Vector3& position);
 
 	/// <summary>
 	/// 更新
@@ -93,21 +93,41 @@ public:
 	// 衝突応答
 	void OnCollision(const Enemy* enemy);
 
+	// 近接攻撃
+	void ProcessAttack();
+
+	// 攻撃判定AABBを取得
+	AABB GetAttackAABB();
+
+	// 攻撃中か
+	bool IsAttacking() { return isAttacking_; }
+
+	LRDirection GetLRDirection() const { return lrDirection_; }
+
+	AABB GetSwordAABB() const;
+
+	bool IsAttacking() const { return isAttacking_; }
+
 private:
+	// ============================
+	// モデル・カメラ関連
+	// ============================
 	// ワールド変換データ
 	KamataEngine::WorldTransform worldTransform_;
-	// モデル
+	// プレイヤーモデル
 	KamataEngine::Model* model_ = nullptr;
-
+	// 剣モデル
+	KamataEngine::Model* modelSword_ = nullptr;
 	// カメラ
 	KamataEngine::Camera* camera_ = nullptr;
 
+	// ============================
+	// 物理・移動関連
+	// ============================
 	KamataEngine::Vector3 velocity_ = {};
 
 	static inline const float kAcceleration = 0.025f;
-
 	static inline const float kAttenuation = 0.90f;
-
 	static inline const float kLimitRunSpeed = 0.15f;
 
 	LRDirection lrDirection_ = LRDirection::kRight;
@@ -116,7 +136,6 @@ private:
 	float turnFirstRotationY_ = 0.0f;
 	// 旋回タイマー
 	float turnTimer_ = 0.0f;
-
 	// 旋回時間<秒>
 	static inline const float kTimeTurn = 0.3f;
 
@@ -129,31 +148,65 @@ private:
 
 	const float kGroundHeight = 1.0f;
 
-	// 地面にいるかどうか
+	// 地面にいるかどうかフラグ
 	bool onGround_ = false;
 
-	// マップチップによるフィールド
+	// マップチップによるフィールド参照
 	MapChipField* mapChipField_ = nullptr;
 
 	// 着地時の速度減衰率
 	static inline const float kAttenuationLanding = 0.03f;
-
-	// 着地時の速度減衰率
+	// 壁に触れたときの速度減衰率
 	static inline const float kAttenuationWall = 0.2f;
 
+	// 微小な数値の定義
 	static inline const float kBlank = 0.04f;
-
-	// 微小な数値
 	static inline const float kGroundSearchHeight = 0.06f;
 
 	// キャラクターの当たり判定サイズ
 	static inline const float kWidth = 0.8f;
 	static inline const float kHeight = 0.8f;
 
+	// ============================
+	// ジャンプ関連
+	// ============================
 	int jumpBufferTimer_ = 0;
 	static constexpr int kJumpBufferFrame = 5;
 
 	// ジャンプ回数カウント
 	int jumpCount_ = 0;
 	const int kMaxJumpCount = 2;
+
+	// ============================
+	// 近接攻撃関連
+	// ============================
+	// 攻撃中フラグ
+	bool isAttacking_ = false;
+
+	// 攻撃タイマー
+	int attackTimer_ = 0;
+
+	// 攻撃持続フレーム
+	static constexpr int kAttackFrame = 12;
+
+	// 攻撃判定サイズ
+	static inline const float kAttackWidth = 1.6f;
+	static inline const float kAttackHeight = 1.6f;
+
+	// 攻撃判定の前方距離
+	static inline const float kAttackOffset = 0.7f;
+
+	// 攻撃開始時の姿勢保存用
+	float attackStartPosX_ = 0.0f;
+	float attackStartRotationX_ = 0.0f;
+
+	// 剣のワールド変換
+	KamataEngine::WorldTransform swordWorldTransform_;
+
+	// 剣の初期回転・位置
+	KamataEngine::Vector3 swordStartRotation_;
+	KamataEngine::Vector3 swordStartTranslation_;
+
+	// 剣のスケール
+	KamataEngine::Vector3 swordScale_;
 };
