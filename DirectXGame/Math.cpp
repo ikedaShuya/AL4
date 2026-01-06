@@ -196,3 +196,25 @@ Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
 	result.z /= w;
 	return result;
 }
+
+Vector3 ToScreen(const Vector3* world) {
+	// ワールド → スクリーン変換
+	// 原点が y に 500 ずれていて、y 軸が反転
+	const Vector3 kWorldToScreenTranslate = {0.0f, 500.0f, 0.0f};
+	const Vector3 kWorldToScreenScale = {1.0f, -1.0f, 1.0f};
+
+	return {
+	    (world->x * kWorldToScreenScale.x) + kWorldToScreenTranslate.x, (world->y * kWorldToScreenScale.y) + kWorldToScreenTranslate.y, (world->z * kWorldToScreenScale.z) + kWorldToScreenTranslate.z};
+}
+
+Vector2 ToScreen(const Vector3& world, const Camera& camera) {
+
+	Vector3 local;
+	local.x = world.x - camera.translation_.x;
+	local.y = world.y - camera.translation_.y;
+
+	const Vector2 screenOrigin = {640.0f, 360.0f}; // 表示領域の基準点
+	const Vector2 scale = {1.0f, -1.0f};
+
+	return {local.x * scale.x + screenOrigin.x, local.y * scale.y + screenOrigin.y};
+}

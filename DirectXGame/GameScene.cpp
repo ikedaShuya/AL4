@@ -23,7 +23,7 @@ void GameScene::Initialize() {
 
 	// 自キャラの生成
 	player_ = new Player();
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 12);
 	// 自キャラの初期化
 	player_->Initialize(modelPlayer_, swordModel_, &camera_, playerPosition);
 
@@ -34,7 +34,7 @@ void GameScene::Initialize() {
 	const int enemyCount = 5;
 
 	// 敵の配置する行は地面の上（y=17）
-	const int enemyY = 18;
+	const int enemyY = 12;
 
 	// 敵のx座標候補リストを作成（0〜99のうち間隔を空けて5箇所）
 	// ここでは単純に均等に配置する例
@@ -59,15 +59,39 @@ void GameScene::Initialize() {
 	CController_->Reset();
 
 	// 移動範囲の指定
-	CameraController::Rect cameraArea = {10.156f, 100 - 12.0f, 6.0f, 6.0f};
+	CameraController::Rect cameraArea = {10.156f, 100 - 12.0f, 2.0f, 13.0f};
 	CController_->SetMovableArea(cameraArea);
+
+	hpBarBgTex_ = TextureManager::Load("hp_bar_bg.png");
+	hpBarFgTex_ = TextureManager::Load("hp_bar_fg.png");
+
+	// 画像サイズそのまま
+	hpBarBg_ = Sprite::Create(hpBarBgTex_, {100, 10});
+	hpBarFg_ = Sprite::Create(hpBarFgTex_, {100, 10});
+
+	// 表示位置（左上）
+	hpBarBg_->SetPosition({120, 20});
+	hpBarFg_->SetPosition({120, 20});
+
+	hpBarBg_->SetAnchorPoint({0.0f, 0.0f});
+	hpBarFg_->SetAnchorPoint({0.0f, 0.0f});
 }
 
 void GameScene::Update() {
 
-	if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
-		finished_ = true;
+	// プレイヤー死亡判定
+	if (player_->GetHp() <= 0) {
+		finished_ = true; // ゲームオーバー
 	}
+	// 全滅判定
+	if (enemies_.empty()) {
+		finished_ = true; // クリア
+	}
+
+	float hpRate = static_cast<float>(player_->GetHp()) / static_cast<float>(player_->GetMaxHp());
+
+	// 横だけ縮める（高さは固定10）
+	hpBarFg_->SetSize({100.0f * hpRate, 10.0f});
 
 	// デスフラグの立った敵を削除
 	enemies_.remove_if([](Enemy* enemy) {
@@ -124,6 +148,16 @@ void GameScene::Draw() {
 
 	// 3Dモデル描画後処理
 	Model::PostDraw();
+
+	// スプライト描画前処理
+	Sprite::PreDraw();
+
+	// HPバー描画
+	hpBarBg_->Draw();
+	hpBarFg_->Draw();
+
+	// スプライト描画後処理
+	Sprite::PostDraw();
 }
 
 GameScene::~GameScene() {
@@ -151,6 +185,9 @@ GameScene::~GameScene() {
 	for (Enemy* enemy_ : enemies_) {
 		delete enemy_;
 	}
+
+	delete hpBarBg_;
+	delete hpBarFg_;
 }
 
 void GameScene::GenerateBlocks() {

@@ -43,7 +43,7 @@ private:
 	KamataEngine::Vector3 targetOffset_ = {0, 0, -15.0f};
 
 	// カメラ移動範囲
-	Rect movableArea_ = {0, 100, 0, 100};
+	Rect movableArea_ = {0, 100, 0, 20};
 
 	// カメラの目標座標
 	KamataEngine::Vector3 destination_ = {0.0f, 0.0f, 0.0f};
@@ -55,5 +55,5 @@ private:
 	static inline const float kVelocityBias = 5.0f;
 
 	// 追従対象の各方向へのカメラ移動範囲
-	static inline const Rect targetMargin = {-9.0f, 9.0f, -5.0f, 5.0f};
+	static inline const Rect targetMargin = {-12.0f, 12.0f, -3.0f, 6.0f};
 };

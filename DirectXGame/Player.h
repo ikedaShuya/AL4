@@ -108,6 +108,14 @@ public:
 
 	bool IsAttacking() const { return isAttacking_; }
 
+	int GetHp() const { return hp_; }
+	int GetMaxHp() const { return maxHp_; }
+
+	// ダメージ処理
+	void TakeDamage(int damage);
+
+	KamataEngine::Vector3 GetHeadWorldPosition();
+
 private:
 	// ============================
 	// モデル・カメラ関連
@@ -209,4 +217,7 @@ private:
 
 	// 剣のスケール
 	KamataEngine::Vector3 swordScale_;
+
+	int hp_ = 100;
+	int maxHp_ = 100;
 };

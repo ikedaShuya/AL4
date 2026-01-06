@@ -60,4 +60,10 @@ private:
 	CameraController* CController_ = nullptr;
 
 	KamataEngine::Model* swordModel_;
+
+	KamataEngine::Sprite* hpBarBg_ = nullptr;
+	KamataEngine::Sprite* hpBarFg_ = nullptr;
+
+	uint32_t hpBarBgTex_ = 0;
+	uint32_t hpBarFgTex_ = 0;
 };

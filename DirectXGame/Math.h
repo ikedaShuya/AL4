@@ -65,3 +65,7 @@ inline float ToRadians(float degrees) {
 inline float ToDegrees(float radians) {
 	return radians * (180.0f / 3.1415f);
 }
+
+KamataEngine::Vector3 ToScreen(const KamataEngine::Vector3* world);
+
+KamataEngine::Vector2 ToScreen(const KamataEngine::Vector3& world, const KamataEngine::Camera& camera);

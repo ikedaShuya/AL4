@@ -126,7 +126,8 @@ AABB Player::GetAABB() {
 
 void Player::OnCollision(const Enemy* enemy) {
 	(void)enemy;
-	velocity_ += Vector3(0.0f, 0.1f, 0.0f);
+	// ダメージ
+	TakeDamage(1);
 }
 
 void Player::InputHorizontal() {
@@ -597,4 +598,14 @@ AABB Player::GetSwordAABB() const {
 	aabb.max = {center.x + swordWidth / 2.0f, center.y + swordHeight / 2.0f, center.z + swordDepth / 2.0f};
 
 	return aabb;
+}
+
+void Player::TakeDamage(int damage) {
+	hp_ -= damage;
+	hp_ = std::max(hp_, 0);
+}
+
+Vector3 Player::GetHeadWorldPosition() {
+	AABB aabb = GetAABB();
+	return {(aabb.min.x + aabb.max.x) * 0.5f, aabb.max.y, (aabb.min.z + aabb.max.z) * 0.5f};
 }
