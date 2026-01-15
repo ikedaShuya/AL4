@@ -59,7 +59,7 @@ void GameScene::Initialize() {
 	CController_->Reset();
 
 	// 移動範囲の指定
-	CameraController::Rect cameraArea = {10.156f, 100 - 12.0f, 2.0f, 13.0f};
+	CameraController::Rect cameraArea = {10.556f, 100 - 12.0f, 11.0f, 13.3f};
 	CController_->SetMovableArea(cameraArea);
 
 	hpBarBgTex_ = TextureManager::Load("hp_bar_bg.png");
@@ -75,18 +75,29 @@ void GameScene::Initialize() {
 
 	hpBarBg_->SetAnchorPoint({0.0f, 0.0f});
 	hpBarFg_->SetAnchorPoint({0.0f, 0.0f});
+
+	modelSkydome_ = Model::CreateFromOBJ("sky", true);
+	skydome_ = new Skydome();                    
+	skydome_->Initialize(modelSkydome_, &camera_);
 }
 
 void GameScene::Update() {
 
 	// プレイヤー死亡判定
 	if (player_->GetHp() <= 0) {
-		finished_ = true; // ゲームオーバー
+		result_ = GameResult::GameOver;
+		finished_ = true;
+		return;
 	}
-	// 全滅判定
+
+	// 敵全滅判定
 	if (enemies_.empty()) {
-		finished_ = true; // クリア
+		result_ = GameResult::Clear;
+		finished_ = true;
+		return;
 	}
+
+	skydome_->Update();
 
 	float hpRate = static_cast<float>(player_->GetHp()) / static_cast<float>(player_->GetMaxHp());
 
@@ -129,6 +140,8 @@ void GameScene::Draw() {
 	// 3Dモデル描画前処理
 	Model::PreDraw();
 
+	skydome_->Draw();
+
 	// ブロックの描画
 	for (std::vector<WorldTransform*>& worldTransformBlcokLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlcokLine) {
@@ -153,8 +166,8 @@ void GameScene::Draw() {
 	Sprite::PreDraw();
 
 	// HPバー描画
-	hpBarBg_->Draw();
 	hpBarFg_->Draw();
+	hpBarBg_->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -188,6 +201,9 @@ GameScene::~GameScene() {
 
 	delete hpBarBg_;
 	delete hpBarFg_;
+
+	delete skydome_;
+	delete modelSkydome_;
 }
 
 void GameScene::GenerateBlocks() {

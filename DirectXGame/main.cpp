@@ -1,3 +1,5 @@
+#include "ClearScene.h"
+#include "GameOverScene.h"
 #include "GameScene.h"
 #include "KamataEngine.h"
 #include "TitleScene.h"
@@ -7,12 +9,16 @@ using namespace KamataEngine;
 
 GameScene* gameScene = nullptr;
 TitleScene* titleScene = nullptr;
+ClearScene* clearScene = nullptr;
+GameOverScene* gameOverScene = nullptr;
 
 // シーン（型）
 enum class Scene {
 	kUnknown = 0,
 	kTitle,
 	kGame,
+	kClear,
+	kGameOver,
 };
 
 // 現在シーン（型）
@@ -34,11 +40,51 @@ void ChangeScene() {
 		break;
 	case Scene::kGame:
 		if (gameScene->IsFinished()) {
-			// シーン変更
+
+			if (gameScene->GetResult() == GameResult::Clear) {
+
+				// シーン変更
+				scene = Scene::kClear;
+				// 旧シーンの解放
+				delete gameScene;
+				gameScene = nullptr;
+				// 新シーンの生成と初期化
+				clearScene = new ClearScene;
+				clearScene->Initialize();
+			} else if (gameScene->GetResult() == GameResult::GameOver) {
+
+				// シーン変更
+				scene = Scene::kGameOver;
+				// 旧シーンの解放
+				delete gameScene;
+				gameScene = nullptr;
+				// 新シーンの生成と初期化
+				gameOverScene = new GameOverScene;
+				gameOverScene->Initialize();
+			}
+		}
+		break;
+	case Scene::kClear:
+		if (clearScene->IsFinished()) {
+
+			// シーン変化
 			scene = Scene::kTitle;
 			// 旧シーンの解放
-			delete gameScene;
-			gameScene = nullptr;
+			delete clearScene;
+			clearScene = nullptr;
+			// 新シーンの生成と初期化
+			titleScene = new TitleScene;
+			titleScene->Initialize();
+		}
+		break;
+	case Scene::kGameOver:
+		if (gameOverScene->IsFinished()) {
+
+			// シーン変化
+			scene = Scene::kTitle;
+			// 旧シーンの解放
+			delete gameOverScene;
+			gameOverScene = nullptr;
 			// 新シーンの生成と初期化
 			titleScene = new TitleScene;
 			titleScene->Initialize();
@@ -55,6 +101,12 @@ void UpdateScene() {
 	case Scene::kGame:
 		gameScene->Update();
 		break;
+	case Scene::kClear:
+		clearScene->Update();
+		break;
+	case Scene::kGameOver:
+		gameOverScene->Update();
+		break;
 	}
 }
 
@@ -66,6 +118,12 @@ void DrawScene() {
 	case Scene::kGame:
 		gameScene->Draw();
 		break;
+	case Scene::kClear:
+		clearScene->Draw();
+		break;
+	case Scene::kGameOver:
+		gameOverScene->Draw();
+		break;
 	}
 }
 
@@ -73,7 +131,7 @@ void DrawScene() {
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	// エンジンの初期化
-	Initialize(L"AL4");
+	Initialize(L"LE2C_04_イケダ_シュウヤ_エアリーナイト");
 
 	// DirectXCommonインスタンスの取得
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();

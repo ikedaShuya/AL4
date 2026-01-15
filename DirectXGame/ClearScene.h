@@ -1,10 +1,9 @@
 #pragma once
 #include "KamataEngine.h"
+#include "Math.h"
+#include <numbers>
 
-/// <summary>
-/// タイトルシーン
-/// </summary>
-class TitleScene {
+class ClearScene {
 public:
 	/// <summary>
 	/// 初期化
@@ -21,19 +20,16 @@ public:
 	/// </summary>
 	void Draw();
 
-	~TitleScene();
+	~ClearScene();
 
-	// デスフラグのgetter
 	bool IsFinished() const { return finished_; }
 
 private:
-
 	// 終了フラグ
 	bool finished_ = false;
 
-
-	// ビュープロジェクション
 	KamataEngine::Camera camera_;
+
 	KamataEngine::WorldTransform worldTransformTitle_;
 
 	KamataEngine::Model* modelTitle_ = nullptr;

@@ -3,6 +3,7 @@
 #include "MapChipField.h"
 #include <algorithm>
 #include <numbers>
+#include <cassert>
 
 using namespace KamataEngine;
 
@@ -28,6 +29,10 @@ void Player::Initialize(Model* model, Model* swordModel, Camera* camera, const V
 }
 
 void Player::Update() {
+
+	if (damageCoolTime_ > 0) {
+		damageCoolTime_--;
+	}
 
 	// 近接攻撃処理
 	ProcessAttack();
@@ -127,7 +132,7 @@ AABB Player::GetAABB() {
 void Player::OnCollision(const Enemy* enemy) {
 	(void)enemy;
 	// ダメージ
-	TakeDamage(1);
+	TakeDamage(50);
 }
 
 void Player::InputHorizontal() {
@@ -601,8 +606,12 @@ AABB Player::GetSwordAABB() const {
 }
 
 void Player::TakeDamage(int damage) {
+	if (damageCoolTime_ > 0) {
+		return;
+	}
 	hp_ -= damage;
 	hp_ = std::max(hp_, 0);
+	damageCoolTime_ = kDamageCoolTime;
 }
 
 Vector3 Player::GetHeadWorldPosition() {

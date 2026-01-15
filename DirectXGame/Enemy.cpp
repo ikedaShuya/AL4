@@ -1,6 +1,7 @@
 #include "Enemy.h"
 #include "Player.h"
 #include <numbers>
+#include <cassert>
 
 using namespace KamataEngine;
 

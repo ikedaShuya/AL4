@@ -1,10 +1,13 @@
 #pragma once
+#include "CameraController.h"
 #include "KamataEngine.h"
 #include "Player.h"
-#include "CameraController.h"
 
-#include "MapChipField.h"
 #include "Enemy.h"
+#include "MapChipField.h"
+#include "Skydome.h"
+
+enum class GameResult { None, Clear, GameOver };
 
 /// <summary>
 /// ゲームシーン
@@ -25,19 +28,19 @@ public:
 	// デスフラグのgetter
 	bool IsFinished() const { return finished_; }
 
+	GameResult GetResult() const { return result_; }
+
 	void GenerateBlocks();
 
 	// 全ての当たり判定を行う
 	void CheckAllCollisions();
 
 private:
-
 	// 終了フラグ
 	bool finished_ = false;
 
 	// カメラ
 	KamataEngine::Camera camera_;
-
 
 	// ブロックモデルデータ
 	KamataEngine::Model* modelBlock_ = nullptr;
@@ -66,4 +69,11 @@ private:
 
 	uint32_t hpBarBgTex_ = 0;
 	uint32_t hpBarFgTex_ = 0;
+
+	Skydome* skydome_ = nullptr;
+
+	// 3Dモデル
+	KamataEngine::Model* modelSkydome_ = nullptr;
+
+	GameResult result_ = GameResult::None;	
 };

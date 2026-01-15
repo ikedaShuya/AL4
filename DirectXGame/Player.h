@@ -116,6 +116,8 @@ public:
 
 	KamataEngine::Vector3 GetHeadWorldPosition();
 
+	bool IsDead() const { return hp_ <= 0; }
+
 private:
 	// ============================
 	// モデル・カメラ関連
@@ -220,4 +222,7 @@ private:
 
 	int hp_ = 100;
 	int maxHp_ = 100;
+
+	int damageCoolTime_ = 0;
+	static constexpr int kDamageCoolTime = 30;
 };
