@@ -5,7 +5,7 @@
 
 #include "Enemy.h"
 #include "MapChipField.h"
-#include "Skydome.h"
+#include "SkyDome.h"
 
 enum class GameResult { None, Clear, GameOver };
 
@@ -48,7 +48,7 @@ private:
 	std::vector<std::vector<KamataEngine::WorldTransform*>> worldTransformBlocks_;
 
 	// マップチップフィールド
-	MapChipField* mapChipField_;
+	MapChipField* mapChipField_ = nullptr;
 
 	// 自キャラ
 	Player* player_ = nullptr;
@@ -62,7 +62,7 @@ private:
 
 	CameraController* CController_ = nullptr;
 
-	KamataEngine::Model* swordModel_;
+	KamataEngine::Model* swordModel_ = nullptr;
 
 	KamataEngine::Sprite* hpBarBg_ = nullptr;
 	KamataEngine::Sprite* hpBarFg_ = nullptr;
@@ -70,10 +70,10 @@ private:
 	uint32_t hpBarBgTex_ = 0;
 	uint32_t hpBarFgTex_ = 0;
 
-	Skydome* skydome_ = nullptr;
+	SkyDome* skyDome_ = nullptr;
 
 	// 3Dモデル
-	KamataEngine::Model* modelSkydome_ = nullptr;
+	KamataEngine::Model* modelSkyDome_ = nullptr;
 
 	GameResult result_ = GameResult::None;	
 };

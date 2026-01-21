@@ -24,7 +24,7 @@ enum class Scene {
 // 現在シーン（型）
 Scene scene = Scene::kUnknown;
 
-void ChangeScene() {
+static void ChangeScene() {
 	switch (scene) {
 	case Scene::kTitle:
 		if (titleScene->IsFinished()) {
@@ -93,7 +93,7 @@ void ChangeScene() {
 	}
 }
 
-void UpdateScene() {
+static void UpdateScene() {
 	switch (scene) {
 	case Scene::kTitle:
 		titleScene->Update();
@@ -110,7 +110,7 @@ void UpdateScene() {
 	}
 }
 
-void DrawScene() {
+static void DrawScene() {
 	switch (scene) {
 	case Scene::kTitle:
 		titleScene->Draw();

@@ -49,7 +49,7 @@ public:
 		bool ceiling = false;
 		bool landing = false;
 		bool hitWall = false;
-		KamataEngine::Vector3 move;
+		KamataEngine::Vector3 move{};
 	};
 
 	// マップ衝突判定
@@ -85,10 +85,10 @@ public:
 	const KamataEngine::Vector3& GetVelocity() const { return velocity_; }
 
 	// ワールド座標を取得
-	KamataEngine::Vector3 GetWorldPosition();
+	KamataEngine::Vector3 GetWorldPosition() const;
 
 	// AABBを取得
-	AABB GetAABB();
+	AABB GetAABB() const;
 
 	// 衝突応答
 	void OnCollision(const Enemy* enemy);
@@ -97,7 +97,7 @@ public:
 	void ProcessAttack();
 
 	// 攻撃判定AABBを取得
-	AABB GetAttackAABB();
+	AABB GetAttackAABB() const;
 
 	// 攻撃中か
 	bool IsAttacking() { return isAttacking_; }
@@ -114,7 +114,7 @@ public:
 	// ダメージ処理
 	void TakeDamage(int damage);
 
-	KamataEngine::Vector3 GetHeadWorldPosition();
+	KamataEngine::Vector3 GetHeadWorldPosition() const;
 
 	bool IsDead() const { return hp_ <= 0; }
 

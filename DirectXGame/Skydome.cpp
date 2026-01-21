@@ -1,9 +1,9 @@
-#include "Skydome.h"
+#include "SkyDome.h"
 #include "Math.h"
 
 using namespace KamataEngine;
 
-void Skydome::Initialize(Model* model, Camera* camera) {
+void SkyDome::Initialize(Model* model, Camera* camera) {
 
 	// NULLポインタチェック
 	assert(model);
@@ -15,13 +15,13 @@ void Skydome::Initialize(Model* model, Camera* camera) {
 	worldTransform_.scale_ = {1.0f, 1.0f, 1.0f};
 }
 
-void Skydome::Update() {
+void SkyDome::Update() {
 
 	// ワールド変換行列を定数バッファに転送
 	WorldTransformUpdate(worldTransform_);
 }
 
-void Skydome::Draw() {
+void SkyDome::Draw() {
 
 	// 3Dモデル描画
 	model_->Draw(worldTransform_, *camera_);

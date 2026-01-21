@@ -76,9 +76,9 @@ void GameScene::Initialize() {
 	hpBarBg_->SetAnchorPoint({0.0f, 0.0f});
 	hpBarFg_->SetAnchorPoint({0.0f, 0.0f});
 
-	modelSkydome_ = Model::CreateFromOBJ("sky", true);
-	skydome_ = new Skydome();                    
-	skydome_->Initialize(modelSkydome_, &camera_);
+	modelSkyDome_ = Model::CreateFromOBJ("sky", true);
+	skyDome_ = new SkyDome();                    
+	skyDome_->Initialize(modelSkyDome_, &camera_);
 }
 
 void GameScene::Update() {
@@ -97,7 +97,7 @@ void GameScene::Update() {
 		return;
 	}
 
-	skydome_->Update();
+	skyDome_->Update();
 
 	float hpRate = static_cast<float>(player_->GetHp()) / static_cast<float>(player_->GetMaxHp());
 
@@ -140,7 +140,7 @@ void GameScene::Draw() {
 	// 3Dモデル描画前処理
 	Model::PreDraw();
 
-	skydome_->Draw();
+	skyDome_->Draw();
 
 	// ブロックの描画
 	for (std::vector<WorldTransform*>& worldTransformBlcokLine : worldTransformBlocks_) {
@@ -202,27 +202,27 @@ GameScene::~GameScene() {
 	delete hpBarBg_;
 	delete hpBarFg_;
 
-	delete skydome_;
-	delete modelSkydome_;
+	delete skyDome_;
+	delete modelSkyDome_;
 }
 
 void GameScene::GenerateBlocks() {
 
 	// 要素数
-	uint32_t numBlockVirtical = mapChipField_->GetNumBlockVirtical();
+	uint32_t numBlockVertical = mapChipField_->GetNumBlockVertical();
 	uint32_t numBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
 
 	// 要素数を変更する
 	// 列数を設定（縦方向のブロック数)
-	worldTransformBlocks_.resize(numBlockVirtical);
-	for (uint32_t i = 0; i < numBlockVirtical; ++i) {
+	worldTransformBlocks_.resize(numBlockVertical);
+	for (uint32_t i = 0; i < numBlockVertical; ++i) {
 		// 1列の要素数を設定（横方向のブロック数)
 		worldTransformBlocks_[i].resize(numBlockHorizontal);
 	}
 
 	// ブロックの生成
 	// キューブの生成
-	for (uint32_t i = 0; i < numBlockVirtical; ++i) {
+	for (uint32_t i = 0; i < numBlockVertical; ++i) {
 		for (uint32_t j = 0; j < numBlockHorizontal; ++j) {
 			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
 

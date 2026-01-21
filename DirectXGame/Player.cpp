@@ -105,10 +105,10 @@ void Player::InputMove() {
 	InputHorizontal();
 }
 
-Vector3 Player::GetWorldPosition() {
+Vector3 Player::GetWorldPosition() const {
 
 	// ワールド座標を入れる変数
-	Vector3 worldPos;
+	Vector3 worldPos{};
 	// ワールド行列の平行移動成分を取得
 	worldPos.x = worldTransform_.matWorld_.m[3][0];
 	worldPos.y = worldTransform_.matWorld_.m[3][1];
@@ -117,11 +117,11 @@ Vector3 Player::GetWorldPosition() {
 	return worldPos;
 }
 
-AABB Player::GetAABB() {
+AABB Player::GetAABB() const {
 
 	Vector3 worldPos = GetWorldPosition();
 
-	AABB aabb;
+	AABB aabb{};
 
 	aabb.min = {worldPos.x - kWidth / 2.0f, worldPos.y - kHeight / 2.0f, worldPos.z - kWidth / 2.0f};
 	aabb.max = {worldPos.x + kWidth / 2.0f, worldPos.y + kHeight / 2.0f, worldPos.z + kWidth / 2.0f};
@@ -250,19 +250,19 @@ void Player::ProcessAttack() {
 	}
 }
 
-AABB Player::GetAttackAABB() {
+AABB Player::GetAttackAABB() const {
 
 	Vector3 pos = GetWorldPosition();
 
 	// 向きによって前方に出す
 	float dir = (lrDirection_ == LRDirection::kRight) ? 1.0f : -1.0f;
 
-	Vector3 center;
+	Vector3 center{};
 	center.x = pos.x + dir * kAttackOffset;
 	center.y = pos.y;
 	center.z = pos.z;
 
-	AABB aabb;
+	AABB aabb{};
 	aabb.min = {center.x - kAttackWidth / 2.0f, center.y - kAttackHeight / 2.0f, center.z - kAttackWidth / 2.0f};
 
 	aabb.max = {center.x + kAttackWidth / 2.0f, center.y + kAttackHeight / 2.0f, center.z + kAttackWidth / 2.0f};
@@ -285,7 +285,7 @@ void Player::CheckMapCollisionUp(CollisionMapInfo& info) {
 	}
 
 	// 移動後の4つの角の座標
-	std::array<Vector3, kNumCorner> positionsNew;
+	std::array<Vector3, kNumCorner> positionsNew{};
 
 	for (uint32_t i = 0; i < positionsNew.size(); ++i) {
 		positionsNew[i] = CornerPosition(worldTransform_.translation_ + info.move, static_cast<Corner>(i));
@@ -339,7 +339,7 @@ void Player::CheckMapCollisionDown(CollisionMapInfo& info) {
 	}
 
 	// 移動後の4つの角の座標
-	std::array<Vector3, kNumCorner> positionsNew;
+	std::array<Vector3, kNumCorner> positionsNew{};
 
 	for (uint32_t i = 0; i < positionsNew.size(); ++i) {
 		positionsNew[i] = CornerPosition(worldTransform_.translation_ + info.move, static_cast<Corner>(i));
@@ -395,7 +395,7 @@ void Player::CheckMapCollisionRight(CollisionMapInfo& info) {
 	}
 
 	// 移動後の4つの角の座標
-	std::array<Vector3, kNumCorner> positionsNew;
+	std::array<Vector3, kNumCorner> positionsNew{};
 
 	for (uint32_t i = 0; i < positionsNew.size(); ++i) {
 		positionsNew[i] = CornerPosition(worldTransform_.translation_ + info.move, static_cast<Corner>(i));
@@ -452,7 +452,7 @@ void Player::CheckMapCollisionLeft(CollisionMapInfo& info) {
 	}
 
 	// 移動後の4つの角の座標
-	std::array<Vector3, kNumCorner> positionsNew;
+	std::array<Vector3, kNumCorner> positionsNew{};
 
 	for (uint32_t i = 0; i < positionsNew.size(); ++i) {
 		positionsNew[i] = CornerPosition(worldTransform_.translation_ + info.move, static_cast<Corner>(i));
@@ -522,7 +522,7 @@ void Player::UpdateOnGround(const CollisionMapInfo& info) {
 		} else {
 
 			// 移動後の4つの角の座標
-			std::array<Vector3, kNumCorner> positionsNew;
+			std::array<Vector3, kNumCorner> positionsNew{};
 
 			for (uint32_t i = 0; i < positionsNew.size(); ++i) {
 				positionsNew[i] = CornerPosition(worldTransform_.translation_ + info.move, static_cast<Corner>(i));
@@ -598,7 +598,7 @@ AABB Player::GetSwordAABB() const {
 	// 剣の中心を少し手前にずらす（剣先すぎると当たらないので）
 	Vector3 center = pos + forward * (swordLength * 0.25f);
 
-	AABB aabb;
+	AABB aabb{};
 	aabb.min = {center.x - swordWidth / 2.0f, center.y - swordHeight / 2.0f, center.z - swordDepth / 2.0f};
 	aabb.max = {center.x + swordWidth / 2.0f, center.y + swordHeight / 2.0f, center.z + swordDepth / 2.0f};
 
@@ -614,7 +614,7 @@ void Player::TakeDamage(int damage) {
 	damageCoolTime_ = kDamageCoolTime;
 }
 
-Vector3 Player::GetHeadWorldPosition() {
+Vector3 Player::GetHeadWorldPosition() const {
 	AABB aabb = GetAABB();
 	return {(aabb.min.x + aabb.max.x) * 0.5f, aabb.max.y, (aabb.min.z + aabb.max.z) * 0.5f};
 }
