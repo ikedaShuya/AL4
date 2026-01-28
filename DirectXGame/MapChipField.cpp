@@ -7,7 +7,10 @@ using namespace KamataEngine;
 
 namespace {
 std::map<char, MapChipType> mapChipTypeTable = {
+    {'0', MapChipType::kBlank },
     {'B', MapChipType::kBlock},
+    {'P', MapChipType::kPlayer},
+    {'E', MapChipType::kEnemy},
 };
 }
 

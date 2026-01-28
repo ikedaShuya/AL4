@@ -42,6 +42,12 @@ void ChangeScene() {
 			// 新シーンの生成と初期化
 			titleScene = new TitleScene;
 			titleScene->Initialize();
+		} else if (gameScene->GetReloadRequested()) {
+			// シーンリロード
+			delete gameScene;
+			gameScene = nullptr;
+			gameScene = new GameScene;
+			gameScene->Initialize();
 		}
 		break;
 	}
@@ -77,6 +83,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	// DirectXCommonインスタンスの取得
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
+	ImGuiManager* imGuiManager = ImGuiManager::GetInstance();
 
 	// 最初のシーンの初期化
 	scene = Scene::kTitle;
@@ -90,16 +97,22 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			break;
 		}
 
+		imGuiManager->Begin();
+
 		// シーン切り替え
 		ChangeScene();
 		// 現在シーン更新
 		UpdateScene();
+
+		imGuiManager->End();
 
 		// 描画開始
 		dxCommon->PreDraw();
 
 		// 現在シーンの描画
 		DrawScene();
+
+		imGuiManager->Draw();
 
 		// 描画終了
 		dxCommon->PostDraw();

@@ -25,10 +25,13 @@ public:
 	// デスフラグのgetter
 	bool IsFinished() const { return finished_; }
 
-	void GenerateBlocks();
+	void GenerateFieldObjects();
 
 	// 全ての当たり判定を行う
 	void CheckAllCollisions();
+
+	// リロード要求フラグのgetter
+	bool GetReloadRequested() const { return reloadRequested_; }
 
 private:
 
@@ -60,4 +63,7 @@ private:
 	CameraController* CController_ = nullptr;
 
 	KamataEngine::Model* swordModel_;
+
+	// リロード要求フラグ
+	bool reloadRequested_ = false;
 };

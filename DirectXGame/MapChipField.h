@@ -4,6 +4,8 @@
 enum class MapChipType {
 	kBlank, // 空白
 	kBlock, // ブロック
+	kPlayer, // プレイヤー
+	kEnemy, // 敵
 };
 
 // 1マス分のデータ
