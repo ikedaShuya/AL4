@@ -6,8 +6,21 @@ enum class MapChipType {
 	kBlock, // ブロック
 };
 
+// 1マス分のデータ
+struct MapChipDataUnit {
+	MapChipType type; // マップチップの種別
+	uint8_t subID;    // 種類ごとのサブID
+};
+
+// ステージ全体のマップチップデータ
 struct MapChipData {
-	std::vector<std::vector<MapChipType>> data;
+	std::vector<std::vector<MapChipDataUnit>> data;
+};
+
+// マップチップのCSVの文字番号
+enum MapChipCharIndex {
+	kChipType = 0, // マップチップタイプ
+	kChipSubID = 1, // タイプごとのサブID
 };
 
 /// <summary>
@@ -43,6 +56,8 @@ public:
 	};
 
 	Rect GetRectByIndex(uint32_t xIndex, uint32_t yIndex);
+
+	uint8_t GetMapChipSubIDByIndex(uint32_t xIndex, uint32_t yIndex);
 
 private:
 	// 1ブロックのサイズ

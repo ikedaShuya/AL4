@@ -64,29 +64,40 @@ GameScene::~GameScene() {
 
 void GameScene::GenerateBlocks() {
 
-	// 要素数
+	// マップサイズ取得
 	uint32_t numBlockVirtical = mapChipField_->GetNumBlockVirtical();
 	uint32_t numBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
 
-	// 要素数を変更する
-	// 列数を設定（縦方向のブロック数)
+	// 配列サイズ確保
 	worldTransformBlocks_.resize(numBlockVirtical);
-	for (uint32_t i = 0; i < numBlockVirtical; ++i) {
-		// 1列の要素数を設定（横方向のブロック数)
-		worldTransformBlocks_[i].resize(numBlockHorizontal);
+	for (uint32_t y = 0; y < numBlockVirtical; ++y) {
+		worldTransformBlocks_[y].resize(numBlockHorizontal, nullptr);
 	}
 
-	// ブロックの生成
-	// キューブの生成
-	for (uint32_t i = 0; i < numBlockVirtical; ++i) {
-		for (uint32_t j = 0; j < numBlockHorizontal; ++j) {
-			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+	// ブロック生成
+	for (uint32_t y = 0; y < numBlockVirtical; ++y) {
+		for (uint32_t x = 0; x < numBlockHorizontal; ++x) {
 
-				WorldTransform* worldTransform = new WorldTransform();
-				worldTransform->Initialize();
-				worldTransformBlocks_[i][j] = worldTransform;
-				worldTransformBlocks_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
+			// マップチップ情報取得
+			MapChipType type = mapChipField_->GetMapChipTypeByIndex(x, y);
+			uint8_t subID = mapChipField_->GetMapChipSubIDByIndex(x, y);
+
+			// ブロック以外は生成しない
+			if (type != MapChipType::kBlock) {
+				continue;
 			}
+
+			// subID が 0 は「何も置かない」扱い
+			if (subID == 0) {
+				continue;
+			}
+
+			// ブロック生成
+			WorldTransform* worldTransform = new WorldTransform();
+			worldTransform->Initialize();
+			worldTransform->translation_ = mapChipField_->GetMapChipPositionByIndex(x, y);
+
+			worldTransformBlocks_[y][x] = worldTransform;
 		}
 	}
 }
