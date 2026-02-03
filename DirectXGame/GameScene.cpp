@@ -30,7 +30,7 @@ void GameScene::Initialize() {
 	CController_->Reset();
 
 	// 移動範囲の指定
-	CameraController::Rect cameraArea = {10.556f, 100 - 12.0f, 11.0f, 13.3f};
+	CameraController::Rect cameraArea = {10.556f, 100 - 12.0f, 11.0f, 20.0f};
 	CController_->SetMovableArea(cameraArea);
 
 	hpBarBgTex_ = TextureManager::Load("hp_bar_bg.png");
@@ -53,15 +53,6 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-
-#ifdef _DEBUG
-	ImGui::Begin("Debug Menu");
-	// リロードボタン
-	if (ImGui::Button("Reload")) {
-		reloadRequested_ = true;
-	}
-	ImGui::End();
-#endif
 
 	// プレイヤー死亡判定
 	if (player_->GetHp() <= 0) {

@@ -88,14 +88,7 @@ static void ChangeScene() {
 			// 新シーンの生成と初期化
 			titleScene = new TitleScene;
 			titleScene->Initialize();
-		} else if (gameScene->GetReloadRequested()) {
-			// シーンリロード
-			delete gameScene;
-			gameScene = nullptr;
-			gameScene = new GameScene;
-			gameScene->Initialize();
 		}
-		break;
 	}
 }
 

@@ -28,13 +28,12 @@ public:
 	// デスフラグのgetter
 	bool IsFinished() const { return finished_; }
 
+	GameResult GetResult() const { return result_; }
+
 	void GenerateFieldObjects();
 
 	// 全ての当たり判定を行う
 	void CheckAllCollisions();
-
-	// リロード要求フラグのgetter
-	bool GetReloadRequested() const { return reloadRequested_; }
 
 private:
 	// 終了フラグ
