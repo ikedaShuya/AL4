@@ -66,12 +66,12 @@ void GameScene::Initialize() {
 	hpBarFgTex_ = TextureManager::Load("hp_bar_fg.png");
 
 	// 画像サイズそのまま
-	hpBarBg_ = Sprite::Create(hpBarBgTex_, {100, 10});
-	hpBarFg_ = Sprite::Create(hpBarFgTex_, {100, 10});
+	hpBarBg_ = Sprite::Create(hpBarBgTex_, {70, 10});
+	hpBarFg_ = Sprite::Create(hpBarFgTex_, {70, 10});
 
 	// 表示位置（左上）
-	hpBarBg_->SetPosition({120, 20});
-	hpBarFg_->SetPosition({120, 20});
+	hpBarBg_->SetPosition({90, 20});
+	hpBarFg_->SetPosition({90, 20});
 
 	hpBarBg_->SetAnchorPoint({0.0f, 0.0f});
 	hpBarFg_->SetAnchorPoint({0.0f, 0.0f});
@@ -79,6 +79,8 @@ void GameScene::Initialize() {
 	modelSkyDome_ = Model::CreateFromOBJ("sky", true);
 	skyDome_ = new SkyDome();                    
 	skyDome_->Initialize(modelSkyDome_, &camera_);
+
+	aSprite_ = Sprite::Create(TextureManager::Load("a.png"), {960.0f, 0.0f});
 }
 
 void GameScene::Update() {
@@ -168,6 +170,7 @@ void GameScene::Draw() {
 	// HPバー描画
 	hpBarFg_->Draw();
 	hpBarBg_->Draw();
+	aSprite_->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

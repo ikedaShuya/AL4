@@ -76,4 +76,6 @@ private:
 	KamataEngine::Model* modelSkyDome_ = nullptr;
 
 	GameResult result_ = GameResult::None;	
+
+	KamataEngine::Sprite* aSprite_ = nullptr;
 };

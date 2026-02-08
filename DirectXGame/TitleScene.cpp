@@ -13,6 +13,10 @@ void TitleScene::Initialize() {
 
 	worldTransformTitle_.Initialize();
 	worldTransformTitle_.scale_ = {5.0f, 5.0f, 5.0f};
+
+	modelSkyDome_ = Model::CreateFromOBJ("sky", true);
+	skyDome_ = new SkyDome();
+	skyDome_->Initialize(modelSkyDome_, &camera_);
 }
 
 void TitleScene::Update() {
@@ -21,8 +25,9 @@ void TitleScene::Update() {
 		finished_ = true;
 	}
 
-	WorldTransformUpdate(worldTransformTitle_);
+	skyDome_->Update();
 
+	WorldTransformUpdate(worldTransformTitle_);
 }
 
 void TitleScene::Draw() {
@@ -30,10 +35,16 @@ void TitleScene::Draw() {
 	// 3Dモデル描画前処理
 	Model::PreDraw();
 
+	skyDome_->Draw();
+
 	modelTitle_->Draw(worldTransformTitle_, camera_);
 
 	// 3Dモデル描画後処理
 	Model::PostDraw();
 }
 
-TitleScene::~TitleScene() { delete modelTitle_; }
+TitleScene::~TitleScene() {
+	delete modelTitle_;
+	delete skyDome_;
+	delete modelSkyDome_;
+}

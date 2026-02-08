@@ -1,5 +1,6 @@
 #pragma once
 #include "KamataEngine.h"
+#include "SkyDome.h"
 
 /// <summary>
 /// タイトルシーン
@@ -37,4 +38,9 @@ private:
 	KamataEngine::WorldTransform worldTransformTitle_;
 
 	KamataEngine::Model* modelTitle_ = nullptr;
+
+	SkyDome* skyDome_ = nullptr;
+
+	// 3Dモデル
+	KamataEngine::Model* modelSkyDome_ = nullptr;
 };
